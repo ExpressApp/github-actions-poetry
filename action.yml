@@ -30,11 +30,15 @@ runs:
         key: ${{ inputs.python-version }}-${{ hashFiles('poetry.lock') }}
 
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        python -m venv .venv
-        source .venv/bin/activate
-        pip install poetry==${{ inputs.poetry-version }}
-        poetry config virtualenvs.in-project true
-        poetry install
+        if echo ${{ steps.cache.outputs.cache-hit }} | grep -c "true"
+        then
+          echo "Cache hit - skipping dependency installation"
+        else
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install poetry==${{ inputs.poetry-version }}
+          poetry config virtualenvs.in-project true
+          poetry install
+        fi
