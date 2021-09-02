@@ -1,14 +1,14 @@
 name: "Setup poetry dependencies"
 description: "Setup Python interpreter and project dependencies."
 inputs:
-  python-version:  # id of input
+  python-version:
     description: "Version of Python interpreter to setup"
     required: true
     default: "3.8"
   poetry-version:
     description: "Version of Poetry package manager to setup"
     required: true
-    default: 1.1.6
+    default: "1.1.6"
 runs:
   using: "composite"
   steps:
