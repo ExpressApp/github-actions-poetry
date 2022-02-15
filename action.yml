@@ -1,6 +1,7 @@
 name: "Setup poetry dependencies"
 description: "Setup Python interpreter and project dependencies."
 
+
 inputs:
   python-version:
     description: "Version of Python interpreter to setup"
@@ -14,6 +15,7 @@ inputs:
 
 runs:
   using: "composite"
+
   steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -34,15 +36,14 @@ runs:
       env:
         cache-name: cache-python-packages
       with:
-        path: .venv
+        path: |
+          ~/.cache/pip
+          .venv
         key: ${{ steps.full-python-version.outputs.version }}-${{ hashFiles('poetry.lock') }}
 
     - name: Install dependencies
       shell: bash
-      if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        python -m venv .venv
-        source .venv/bin/activate
         pip install poetry==${{ inputs.poetry-version }}
         poetry config virtualenvs.in-project true
         poetry install
