@@ -23,6 +23,11 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
+    - name: Get full Python version
+      id: full-python-version
+      shell: bash
+      run: echo ::set-output name=version::$(python -c "import sys; print('-'.join(str(v) for v in sys.version_info))")
+
     - name: Cache python packages
       id: cache
       uses: actions/cache@v2
@@ -30,18 +35,14 @@ runs:
         cache-name: cache-python-packages
       with:
         path: .venv
-        key: ${{ inputs.python-version }}-${{ hashFiles('poetry.lock') }}
+        key: ${{ steps.full-python-version.outputs.version }}-${{ hashFiles('poetry.lock') }}
 
     - name: Install dependencies
       shell: bash
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        if echo ${{ steps.cache.outputs.cache-hit }} | grep -c "true"
-        then
-          echo "Cache hit - skipping dependency installation"
-        else
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install poetry==${{ inputs.poetry-version }}
-          poetry config virtualenvs.in-project true
-          poetry install
-        fi
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install poetry==${{ inputs.poetry-version }}
+        poetry config virtualenvs.in-project true
+        poetry install
