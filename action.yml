@@ -44,6 +44,6 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        pip install poetry==${{ inputs.poetry-version }}
+        pip install -q poetry==${{ inputs.poetry-version }}
         poetry config virtualenvs.in-project true
         poetry install
