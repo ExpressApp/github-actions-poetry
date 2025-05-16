@@ -6,22 +6,22 @@ inputs:
   python-version:
     description: "Version of Python interpreter to setup"
     required: true
-    default: "3.8"
+    default: "3.9"
 
   poetry-version:
     description: "Version of Poetry package manager to setup"
     required: true
-    default: "1.3.2"
+    default: "2.1.3"
 
 runs:
   using: "composite"
 
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -32,7 +32,7 @@ runs:
 
     - name: Cache python packages
       id: cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-python-packages
       with:
